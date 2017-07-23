@@ -18,7 +18,10 @@ from datetime import datetime
 import time
 import os
 import re
+import TiltHydrometer
 
+
+#Includes changes for tilt hydrometer data
 jsonCols = ("\"cols\":[" +
             "{\"type\":\"datetime\",\"id\":\"Time\",\"label\":\"Time\"}," +
             "{\"type\":\"number\",\"id\":\"BeerTemp\",\"label\":\"Beer temperature\"}," +
@@ -28,7 +31,23 @@ jsonCols = ("\"cols\":[" +
             "{\"type\":\"number\",\"id\":\"FridgeSet\",\"label\":\"Fridge setting\"}," +
             "{\"type\":\"string\",\"id\":\"FridgeAnn\",\"label\":\"Fridge Annotate\"}," +
             "{\"type\":\"number\",\"id\":\"RoomTemp\",\"label\":\"Room temp.\"}," +
-            "{\"type\":\"number\",\"id\":\"State\",\"label\":\"State\"}" +
+            "{\"type\":\"number\",\"id\":\"State\",\"label\":\"State\"}," +
+			"{\"type\":\"number\",\"id\":\"RedTemp\",\"label\":\"Red Tilt temp.\"}," +
+			"{\"type\":\"number\",\"id\":\"RedSG\",\"label\":\"Red Tilt Gravity\"}," +
+			"{\"type\":\"number\",\"id\":\"GreenTemp\",\"label\":\"Green Tilt temp.\"}," +
+			"{\"type\":\"number\",\"id\":\"GreenSG\",\"label\":\"Green Tilt Gravity\"}," +
+			"{\"type\":\"number\",\"id\":\"BlackTemp\",\"label\":\"Black Tilt temp.\"}," +
+			"{\"type\":\"number\",\"id\":\"BlackSG\",\"label\":\"Black Tilt Gravity\"}," +
+			"{\"type\":\"number\",\"id\":\"PurpleTemp\",\"label\":\"Purple Tilt temp.\"}," +
+			"{\"type\":\"number\",\"id\":\"PurpleSG\",\"label\":\"Purple Tilt Gravity\"}," +
+			"{\"type\":\"number\",\"id\":\"OrangeTemp\",\"label\":\"Orange Tilt temp.\"}," +
+			"{\"type\":\"number\",\"id\":\"OrangeSG\",\"label\":\"Orange Tilt Gravity\"}," +
+			"{\"type\":\"number\",\"id\":\"BlueTemp\",\"label\":\"Blue Tilt temp.\"}," +
+			"{\"type\":\"number\",\"id\":\"BlueSG\",\"label\":\"Blue Tilt Gravity\"}," +
+			"{\"type\":\"number\",\"id\":\"YellowTemp\",\"label\":\"Yellow Tilt temp.\"}," +
+			"{\"type\":\"number\",\"id\":\"YellowSG\",\"label\":\"Yellow Tilt Gravity\"}," +
+			"{\"type\":\"number\",\"id\":\"PinkTemp\",\"label\":\"Pink Tilt temp.\"}," +
+			"{\"type\":\"number\",\"id\":\"PinkSG\",\"label\":\"Pink Tilt Gravity\"}" +
             "]")
 
 
@@ -99,6 +118,19 @@ def addRow(jsonFileName, row):
 		jsonFile.write("null")
 	else:
 		jsonFile.write("{\"v\":" + str(row['State']) + "}")
+	
+	#Write out Tilt Hydrometer values
+	for colour in TiltHydrometer.TILTHYDROMETER_COLOURS:
+		jsonFile.write(",")
+		if row.get(colour + 'Temp', None) is None:
+			jsonFile.write("null,")
+		else:
+			jsonFile.write("{\"v\":" + str(row[colour + 'Temp']) + "},")
+		if row.get(colour + 'SG', None) is None:
+			jsonFile.write("null")
+		else:
+			jsonFile.write("{\"v\":" + str(row[colour + 'SG']) + "}")
+
 
 	# rewrite end of json file
 	jsonFile.write("]}]}")
